@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Соточка 💯 — Все курсы ЕГЭ и ОГЭ в одном Telegram-боте</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-main: #0B0F19;
+      --bg-card: #131B2E;
+      --bg-card-hover: #1B2540;
+      --accent-blue: #2AABEE;
+      --accent-purple: #7C3AED;
+      --accent-gradient: linear-gradient(135deg, #2AABEE 0%, #7C3AED 100%);
+      --text-main: #F8FAFC;
+      --text-muted: #94A3B8;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --badge-bg: rgba(42, 171, 238, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Glow Background effects */
+    .glow-blob {
+      position: absolute;
+      width: 450px;
+      height: 450px;
+      background: radial-gradient(circle, rgba(42, 171, 238, 0.25) 0%, rgba(124, 58, 237, 0) 70%);
+      filter: blur(80px);
+      z-index: -1;
+      pointer-events: none;
+    }
+    .glow-top { top: -100px; left: 50%; transform: translateX(-50%); }
+
+    /* Header */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(11, 15, 25, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+    }
+    .nav-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 76px;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.4rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    .logo-badge {
+      background: var(--accent-gradient);
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--text-muted);
+      font-weight: 500;
+      transition: color 0.2s;
+      font-size: 0.95rem;
+    }
+    .nav-links a:hover {
+      color: var(--text-main);
+    }
+    .btn-tg {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent-gradient);
+      color: #fff;
+      font-weight: 700;
+      padding: 12px 24px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(42, 171, 238, 0.3);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-tg:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 25px rgba(42, 171, 238, 0.45);
+    }
+    .btn-tg svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 90px 0 60px;
+      text-align: center;
+      position: relative;
+    }
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--badge-bg);
+      border: 1px solid rgba(42, 171, 238, 0.3);
+      color: var(--accent-blue);
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -1px;
+      margin-bottom: 20px;
+    }
+    .gradient-text {
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      max-width: 650px;
+      margin: 0 auto 36px;
+      color: var(--text-muted);
+      font-size: 1.15rem;
+    }
+    .hero-actions {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .btn-secondary {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    .btn-secondary:hover {
+      background: var(--bg-card-hover);
+    }
+
+    /* Stats Section */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin: 60px 0;
+    }
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      padding: 24px;
+      border-radius: 16px;
+      text-align: center;
+      transition: transform 0.2s;
+    }
+    .stat-card:hover {
+      transform: translateY(-4px);
+    }
+    .stat-val {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--accent-blue);
+      margin-bottom: 4px;
+    }
+    .stat-desc {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* Section Global */
+    section {
+      padding: 60px 0;
+    }
+    .section-title {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .section-title h2 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+    .section-title p {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+    }
+
+    /* Catalog Cards */
+    .catalog-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
+    .course-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .course-card:hover {
+      border-color: rgba(42, 171, 238, 0.4);
+      transform: translateY(-4px);
+    }
+    .card-badge {
+      align-self: flex-start;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      padding: 4px 12px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent-blue);
+      margin-bottom: 16px;
+    }
+    .course-card h3 {
+      font-size: 1.4rem;
+      margin-bottom: 12px;
+    }
+    .course-card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 24px;
+    }
+    .subject-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+    .tag {
+      background: rgba(255, 255, 255, 0.04);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      color: #CBD5E1;
+    }
+    .card-btn {
+      width: 100%;
+      text-align: center;
+      background: rgba(42, 171, 238, 0.1);
+      border: 1px solid rgba(42, 171, 238, 0.3);
+      color: var(--accent-blue);
+      padding: 12px 0;
+      border-radius: 12px;
+      font-weight: 700;
+      transition: all 0.2s;
+    }
+    .course-card:hover .card-btn {
+      background: var(--accent-blue);
+      color: #fff;
+    }
+
+    /* Steps / How it works */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+    }
+    .step-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 28px;
+      position: relative;
+    }
+    .step-num {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: rgba(255, 255, 255, 0.08);
+      position: absolute;
+      top: 16px;
+      right: 20px;
+    }
+    .step-card h3 {
+      font-size: 1.2rem;
+      margin-bottom: 8px;
+    }
+    .step-card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* Reviews */
+    .reviews-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .review-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 24px;
+    }
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .review-author {
+      font-weight: 700;
+    }
+    .review-score {
+      background: rgba(34, 197, 94, 0.15);
+      color: #4ADE80;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+    .review-text {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* FAQ */
+    .faq-list {
+      max-width: 800px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .faq-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .faq-question {
+      padding: 20px 24px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+      user-select: none;
+    }
+    .faq-question span:last-child {
+      font-size: 1.2rem;
+      transition: transform 0.2s;
+    }
+    .faq-answer {
+      padding: 0 24px 20px;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      display: none;
+    }
+    .faq-item.active .faq-answer {
+      display: block;
+    }
+    .faq-item.active .faq-question span:last-child {
+      transform: rotate(45deg);
+    }
+
+    /* CTA Section */
+    .cta-banner {
+      background: linear-gradient(135deg, rgba(42, 171, 238, 0.15) 0%, rgba(124, 58, 237, 0.15) 100%);
+      border: 1px solid rgba(42, 171, 238, 0.3);
+      border-radius: 24px;
+      padding: 60px 30px;
+      text-align: center;
+      margin-top: 40px;
+    }
+    .cta-banner h2 {
+      font-size: 2.2rem;
+      margin-bottom: 12px;
+    }
+    .cta-banner p {
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto 28px;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border-color);
+      padding: 40px 0;
+      margin-top: 80px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    .footer-wrap {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hero { padding: 60px 0 40px; }
+      .stats { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background Glow -->
+  <div class="glow-blob glow-top"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="container nav-wrap">
+      <div class="logo">
+        <span>Соточка</span>
+        <span class="logo-badge">100</span>
+      </div>
+      <ul class="nav-links">
+        <li><a href="#catalog">Направления</a></li>
+        <li><a href="#how">Как это работает</a></li>
+        <li><a href="#reviews">Отзывы</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+      <!-- Замени ссылку на юзернейм своего бота -->
+      <a href="https://t.me/your_bot_username" target="_blank" class="btn-tg">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+        <span>Открыть бота</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <main class="container">
+    <section class="hero">
+      <div class="hero-tag">⚡️ Сезон подготовки 2025–2026 открыт</div>
+      <h1>Все топовые курсы к экзаменам <br><span class="gradient-text">в одном Telegram-боте</span></h1>
+      <p>Получай мгновенный доступ к вебинарам, домашним заданиям и конспектам от лучших онлайн-школ без бешеных переплат.</p>
+      
+      <div class="hero-actions">
+        <a href="https://t.me/your_bot_username" target="_blank" class="btn-tg">
+          <span>Запустить «Соточку»</span>
+        </a>
+        <a href="#catalog" class="btn-secondary">Выбрать предмет ↓</a>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="stats">
+        <div class="stat-card">
+          <div class="stat-val">500+</div>
+          <div class="stat-desc">Курсов и марафонов</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val">24 / 7</div>
+          <div class="stat-desc">Автоматическая выдача</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val">90%+</div>
+          <div class="stat-desc">Экономия бюджета</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val">84.6</div>
+          <div class="stat-desc">Средний балл учеников</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Catalog Section -->
+    <section id="catalog">
+      <div class="section-title">
+        <h2>Направления подготовки</h2>
+        <p>Выбирай нужный уровень — внутри бота есть всё от годовых курсов до экспресс-повторений</p>
+      </div>
+
+      <div class="catalog-grid">
+        <!-- ЕГЭ 11 Класс -->
+        <div class="course-card">
+          <div>
+            <span class="card-badge">Основной поток</span>
+            <h3>ЕГЭ 11 Класс</h3>
+            <p>Полные годовые и полугодовые программы, спецкурсы по второй части и марафоны.</p>
+            <div class="subject-tags">
+              <span class="tag">Информатика</span>
+              <span class="tag">Проф. Математика</span>
+              <span class="tag">Русский язык</span>
+              <span class="tag">Физика</span>
+              <span class="tag">Обществознание</span>
+            </div>
+          </div>
+          <a href="https://t.me/your_bot_username?start=ege" target="_blank" class="card-btn">Смотреть в боте →</a>
+        </div>
+
+        <!-- ОГЭ 9 Класс -->
+        <div class="course-card">
+          <div>
+            <span class="card-badge">База и фундамент</span>
+            <h3>ОГЭ 9 Класс</h3>
+            <p>Подготовка для сдачи экзаменов на максимум и уверенного перехода в 10 класс.</p>
+            <div class="subject-tags">
+              <span class="tag">Математика</span>
+              <span class="tag">Русский язык</span>
+              <span class="tag">Информатика</span>
+              <span class="tag">Обществознание</span>
+            </div>
+          </div>
+          <a href="https://t.me/your_bot_username?start=oge" target="_blank" class="card-btn">Смотреть в боте →</a>
+        </div>
+
+        <!-- Спецкурсы и шпоры -->
+        <div class="course-card">
+          <div>
+            <span class="card-badge">Интенсивы</span>
+            <h3>Финальные марафоны & Шпоры</h3>
+            <p>Итоговое сочинение, предбанники, чек-листы, скрипты и закрытые банки заданий.</p>
+            <div class="subject-tags">
+              <span class="tag">Итоговое сочинение</span>
+              <span class="tag">Шпоры</span>
+              <span class="tag">Флэш / Интенсив</span>
+            </div>
+          </div>
+          <a href="https://t.me/your_bot_username?start=spec" target="_blank" class="card-btn">Смотреть в боте →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section id="how">
+      <div class="section-title">
+        <h2>Как это работает?</h2>
+        <p>Всего 3 простых шага до начала занятий</p>
+      </div>
+
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-num">01</div>
+          <h3>Запуск бота</h3>
+          <p>Переходишь по ссылке и нажимаешь кнопку <code>/start</code> в боте «Соточка».</p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">02</div>
+          <h3>Выбор школы и курса</h3>
+          <p>В удобном каталоге выбираешь свой экзамен, предмет и любимого преподавателя.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">03</div>
+          <h3>Мгновенный доступ</h3>
+          <p>Бот автоматически открывает доступ к закрытому каналу с записями и материалами.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Reviews -->
+    <section id="reviews">
+      <div class="section-title">
+        <h2>Результаты наших ребят</h2>
+        <p>Реальные отзывы тех, кто готовился вместе с нами</p>
+      </div>
+
+      <div class="reviews-grid">
+        <div class="review-card">
+          <div class="review-header">
+            <span class="review-author">Артём М.</span>
+            <span class="review-score">ЕГЭ Информатика: 95</span>
+          </div>
+          <p class="review-text">«Брал курс по инфе. Все вебы выходили вовремя, домашки и файлы на месте. Сэкономил кучу денег родителям и поступил на бюджет!»</p>
+        </div>
+
+        <div class="review-card">
+          <div class="review-header">
+            <span class="review-author">София К.</span>
+            <span class="review-score">ЕГЭ Русский: 94</span>
+          </div>
+          <p class="review-text">«Бот супер удобный, все по папкам разложено. Ничего не виснет, выдача моментальная после оплаты. Спасибо огромное создателям!»</p>
+        </div>
+
+        <div class="review-card">
+          <div class="review-header">
+            <span class="review-author">Даниил Р.</span>
+            <span class="review-score">ЕГЭ Профиль: 88</span>
+          </div>
+          <p class="review-text">«Готовился с полугодового. Вторая часть разобрана от и до. Бот — настоящая находка для тех, кто хочет сотку.»</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq">
+      <div class="section-title">
+        <h2>Частые вопросы</h2>
+        <p>Всё, что нужно знать перед стартом</p>
+      </div>
+
+      <div class="faq-list">
+        <div class="faq-item">
+          <div class="faq-question">
+            <span>Как быстро приходит доступ к курсам?</span>
+            <span>+</span>
+          </div>
+          <div class="faq-answer">
+            Доступ выдается ботом полностью автоматически сразу после подтверждения оплаты. Никаких ожиданий администраторов.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span>Входят ли в курсы домашние задания и конспекты?</span>
+            <span>+</span>
+          </div>
+          <div class="faq-answer">
+            Да! Вы получаете абсолютно весь комплект: полные видеозаписи занятий в высоком качестве, таймкоды, скрипты, рабочие тетради и файлы с ДЗ.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span>Материалы актуальны для 2026 года?</span>
+            <span>+</span>
+          </div>
+          <div class="faq-answer">
+            База регулярно обновляется под актуальные демоверсии ФИПИ текущего учебного года.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span>Что делать, если возникнут вопросы или нужна помощь?</span>
+            <span>+</span>
+          </div>
+          <div class="faq-answer">
+            В главном меню бота всегда доступна кнопка связи с нашей службой заботы, которая поможет решить любой вопрос.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Bottom Banner -->
+    <div class="cta-banner">
+      <h2>Готов забрать свои 100 баллов?</h2>
+      <p>Не откладывай подготовку на последний месяц. Заходи в бота прямо сейчас и выбирай нужный курс.</p>
+      <a href="https://t.me/your_bot_username" target="_blank" class="btn-tg">
+        <span>Перейти в Telegram-бота</span>
+      </a>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-wrap">
+      <div>
+        <strong>Соточка</strong> © 2026. Образовательный агрегатор курсов.
+      </div>
+      <div>
+        <a href="https://t.me/your_support_username" target="_blank">Поддержка</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Simple Accordion Script -->
+  <script>
+    document.querySelectorAll('.faq-question').forEach(q => {
+      q.addEventListener('click', () => {
+        const item = q.parentElement;
+        item.classList.toggle('active');
+      });
+    });
+  </script>
+</body>
+</html>
