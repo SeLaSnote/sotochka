@@ -105,7 +105,7 @@
       transform: translateY(-1px);
     }
 
-    /* HERO SECTION 2 КОЛОНКИ */
+    /* HERO SECTION */
     .hero-wrapper {
       display: flex;
       align-items: center;
@@ -157,31 +157,23 @@
       transform: translateY(-2px);
     }
 
-    /* ФОТО КАНАЛА */
+    /* ФОТО КАНАЛА (АМ НЯМ) */
     .hero-image {
       flex: 1;
       display: flex;
-      justify-content: flex-end;
+      justify-content: center;
     }
-    .mockup-container {
+    .channel-avatar {
       width: 100%;
       max-width: 320px;
-      background: #fff;
-      border-radius: 24px;
-      padding: 10px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.08);
-      border: 1px solid var(--border);
-      position: relative;
+      border-radius: 30px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      animation: float 6s ease-in-out infinite;
     }
-    .mockup-container img {
-      width: 100%;
-      height: auto;
-      border-radius: 16px;
-      display: block;
-      /* Если картинки пока нет, зададим серый фон для наглядности */
-      background: #e2e8f0; 
-      min-height: 500px; 
-      object-fit: cover;
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-15px); }
+      100% { transform: translateY(0px); }
     }
 
     /* STATS */
@@ -244,6 +236,7 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
+      margin-bottom: 20px;
     }
     .course-card {
       display: grid;
@@ -272,6 +265,8 @@
       font-weight: 700;
       text-align: center;
       text-transform: uppercase;
+      background-size: cover;
+      background-position: center;
     }
     .course-cover img { width: 100%; height: 100%; object-fit: cover; }
     
@@ -309,6 +304,17 @@
     }
     .btn-details:hover { background: #1b8ec5; }
     .empty-note { color: var(--text-muted); font-size: 13px; padding: 24px 0; text-align: center; }
+
+    .other-schools-note {
+      font-size: 13px;
+      color: var(--text-muted);
+      text-align: center;
+      padding-top: 15px;
+      border-top: 1px dashed var(--border);
+    }
+    .other-schools-note strong {
+      color: var(--text-dark);
+    }
 
     /* STEPS */
     .steps-grid {
@@ -358,7 +364,7 @@
         <li><a href="#how">Как это устроено</a></li>
         <li><a href="#faq">Вопросы</a></li>
       </ul>
-      <a href="https://t.me/your_bot_username" target="_blank" class="btn-tg-nav tg-link">
+      <a href="#" target="_blank" class="btn-tg-nav tg-link">
         <span>Открыть в Telegram</span>
       </a>
     </div>
@@ -370,17 +376,15 @@
       <div class="hero-content">
         <div class="hero-badge">🎓 Подготовка к ЕГЭ 2026–2027</div>
         <h1>Все курсы для экзаменов <br>в одном Telegram-боте</h1>
-        <p>Актуальные программы онлайн-школ: Умскул, 100балльный, НОО, ЕГЭLand и другие. Выбирай предмет и получай доступ прямо в Telegram.</p>
-        <a href="https://t.me/your_bot_username" target="_blank" class="btn-hero tg-link">
+        <p>Актуальные программы от топовых онлайн-школ: Умскул, 100балльный, НОО, ЕГЭLand и многие другие. Выбирай нужный предмет и получай доступ прямо в Telegram.</p>
+        <a href="#" target="_blank" class="btn-hero tg-link">
           <span>Перейти в Telegram-бота →</span>
         </a>
       </div>
       
       <div class="hero-image">
-        <!-- СЮДА НУЖНО ВСТАВИТЬ ПУТЬ ДО ФОТО КАНАЛА ИЛИ БОТА -->
-        <div class="mockup-container">
-          <img src="photo_placeholder.png" alt="Канал Соточка" id="channelPhoto">
-        </div>
+        <!-- ФОТО АМ НЯМА -->
+        <img src="photo_2026-01-22_22-05-42.jpg" alt="Канал Соточка" class="channel-avatar">
       </div>
     </section>
 
@@ -413,6 +417,11 @@
       <div class="filter-row" id="filterList"></div>
       <div class="course-list" id="courseList"></div>
       <div class="empty-note" id="emptyNote" style="display:none;">По этому предмету курсов пока нет</div>
+      
+      <!-- Примечание о других школах -->
+      <div class="other-schools-note">
+        💡 Помимо представленных вариантов, в нашем боте доступны курсы от <strong>Умскул, ЕГЭLand, ЕГЭ Flex, Пифагора, SMITUP, NeoFamily</strong> и других онлайн-школ.
+      </div>
     </section>
 
     <!-- HOW IT WORKS -->
@@ -467,7 +476,8 @@
   </footer>
 
   <script>
-    const telegramLink = "https://t.me/your_bot_username";
+    // Ссылка на твоего бота
+    const telegramLink = "https://t.me/StoballniRepetitorSlivv_bot";
 
     const subjects = [
       "Русский язык", "Математика (профиль)", "Математика (база)", "Обществознание",
@@ -475,91 +485,91 @@
       "Английский язык", "Литература", "География"
     ];
 
-    // Точные данные из твоего products.json
+    // Актуализированные курсы с фото и ценами
     const courses = [
       {
         subject: "Русский язык",
         title: "Годовой курс «Новый русский»",
         school: "100балльный",
         start: "Сентябрь", lessons: "12 уроков/мес", duration: "9 мес.",
-        price: "300 ₽", image: "", color: "#e11d48", initials: "РУС"
+        price: "300 ₽", image: "изображение_2.jpg", color: "#e11d48", initials: "РУС"
       },
       {
         subject: "Математика (профиль)",
         title: "Годовой курс «Легион»",
         school: "100балльный (Ильич)",
         start: "Сентябрь", lessons: "12 уроков/мес", duration: "9 мес.",
-        price: "300 ₽", image: "", color: "#2563eb", initials: "ПРО"
+        price: "300 ₽", image: "изображение_3.jpg", color: "#2563eb", initials: "ПРО"
       },
       {
         subject: "Математика (база)",
         title: "Основной курс",
-        school: "Умскул",
+        school: "Надежда Ковалевская",
         start: "Сентябрь", lessons: "13 уроков/мес", duration: "8.5 мес.",
-        price: "100 ₽", image: "", color: "#0284c7", initials: "БАЗ"
+        price: "100 ₽", image: "изображение_5.jpg", color: "#0284c7", initials: "БАЗ"
       },
       {
         subject: "Обществознание",
         title: "Годовой курс «Ликбез»",
         school: "100балльный (Валентиныч)",
         start: "Сентябрь", lessons: "12 уроков/мес", duration: "9 мес.",
-        price: "300 ₽", image: "", color: "#d97706", initials: "ОБЩ"
+        price: "300 ₽", image: "изображение_4.jpg", color: "#d97706", initials: "ОБЩ"
       },
       {
         subject: "История",
         title: "Годовой курс «Гвардия»",
         school: "100балльный",
         start: "Сентябрь", lessons: "12 уроков/мес", duration: "9 мес.",
-        price: "300 ₽", image: "", color: "#7c3aed", initials: "ИСТ"
+        price: "300 ₽", image: "изображение_6.jpg", color: "#7c3aed", initials: "ИСТ"
       },
       {
         subject: "Физика",
         title: "Годовой курс «Эбонит»",
         school: "100балльный",
         start: "Сентябрь", lessons: "12 уроков/мес", duration: "9 мес.",
-        price: "300 ₽", image: "", color: "#0d9488", initials: "ФИЗ"
+        price: "300 ₽", image: "изображение.jpg", color: "#0d9488", initials: "ФИЗ"
       },
       {
         subject: "Химия",
         title: "Годовой курс «Химфак»",
         school: "100балльный",
         start: "Сентябрь", lessons: "12 уроков/мес", duration: "9 мес.",
-        price: "300 ₽", image: "", color: "#16a34a", initials: "ХИМ"
+        price: "300 ₽", image: "изображение_7.jpg", color: "#16a34a", initials: "ХИМ"
       },
       {
         subject: "Биология",
-        title: "Основной курс",
-        school: "НОО",
-        start: "Сентябрь", lessons: "8 уроков/мес", duration: "9 мес.",
-        price: "300 ₽", image: "", color: "#65a30d", initials: "БИО"
+        title: "Годовой курс «Большая Медведица»",
+        school: "100балльный",
+        start: "Сентябрь", lessons: "12 уроков/мес", duration: "9 мес.",
+        price: "300 ₽", image: "изображение_8.jpg", color: "#65a30d", initials: "БИО"
       },
       {
         subject: "Информатика",
         title: "Годовой курс «Флеш»",
         school: "100балльный",
         start: "Сентябрь", lessons: "12 уроков/мес", duration: "9 мес.",
-        price: "300 ₽", image: "", color: "#4f46e5", initials: "ИНФ"
+        price: "300 ₽", image: "изображение_9.jpg", color: "#4f46e5", initials: "ИНФ"
       },
       {
         subject: "Английский язык",
         title: "Мастер-группа",
-        school: "Английский и Котики",
+        school: "Алина (Английский)",
         start: "Сентябрь", lessons: "12 уроков/мес", duration: "9 мес.",
-        price: "300 ₽", image: "", color: "#db2777", initials: "АНГ"
+        price: "300 ₽", image: "изображение_10.jpg", color: "#db2777", initials: "АНГ"
       },
       {
         subject: "Литература",
         title: "Годовой курс «Литфак»",
-        school: "100балльный",
+        school: "Маша Коршунова",
         start: "Сентябрь", lessons: "12 уроков/мес", duration: "9 мес.",
-        price: "300 ₽", image: "", color: "#b45309", initials: "ЛИТ"
+        price: "300 ₽", image: "изображение_11.jpg", color: "#b45309", initials: "ЛИТ"
       },
       {
         subject: "География",
-        title: "Полугодовая МГ",
-        school: "Вебиум",
+        title: "Годовой курс",
+        school: "100балльный (Полина)",
         start: "Сентябрь", lessons: "12 уроков/мес", duration: "9 мес.",
-        price: "600 ₽", image: "", color: "#0891b2", initials: "ГЕО"
+        price: "300 ₽", image: "изображение_12.jpg", color: "#0891b2", initials: "ГЕО"
       }
     ];
 
