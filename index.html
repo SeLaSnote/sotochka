@@ -208,9 +208,42 @@
       margin-bottom: 50px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.02);
     }
-    .section-head { margin-bottom: 18px; }
-    .section-head h2 { font-size: 20px; font-weight: 700; }
+    .section-head { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: flex-end; 
+      flex-wrap: wrap; 
+      gap: 16px;
+      margin-bottom: 20px; 
+    }
+    .section-head h2 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
     .section-head p { font-size: 13.5px; color: var(--text-muted); }
+
+    /* ПЕРЕКЛЮЧАТЕЛЬ ЕГЭ / ОГЭ */
+    .exam-toggle {
+      display: flex;
+      gap: 6px;
+      background: var(--bg-body);
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+    .toggle-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .toggle-btn.active {
+      background: #ffffff;
+      color: var(--primary);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
 
     .filter-row {
       display: flex;
@@ -279,6 +312,7 @@
     .tag { font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 5px; }
     .tag.year { background: #0f172a; color: #fff; }
     .tag.exam { background: var(--exam-bg); color: var(--exam-text); }
+    .tag.exam-oge { background: #e0e7ff; color: #4338ca; }
     
     .meta-row { display: flex; gap: 14px; flex-wrap: wrap; }
     .meta-item { font-size: 11.5px; color: var(--text-muted); }
@@ -343,6 +377,9 @@
       .hero-wrapper { flex-direction: column; text-align: center; }
       .hero-image { justify-content: center; width: 100%; }
       .nav-links { display: none; }
+      .section-head { flex-direction: column; align-items: flex-start; }
+      .exam-toggle { width: 100%; }
+      .toggle-btn { flex: 1; text-align: center; }
     }
     @media (max-width: 600px) {
       .course-card { grid-template-columns: 48px 1fr; }
@@ -374,7 +411,7 @@
     <!-- HERO SECTION -->
     <section class="hero-wrapper">
       <div class="hero-content">
-        <div class="hero-badge">🎓 Подготовка к ЕГЭ 2026–2027</div>
+        <div class="hero-badge">🎓 Подготовка к ЕГЭ и ОГЭ 2026–2027</div>
         <h1>Все курсы для экзаменов <br>в одном Telegram-боте</h1>
         <p>Актуальные программы от топовых онлайн-школ: Умскул, 100балльный, НОО, ЕГЭLand и многие другие. Выбирай нужный предмет и получай доступ прямо в Telegram.</p>
         <a href="#" target="_blank" class="btn-hero tg-link">
@@ -411,9 +448,17 @@
     <!-- CATALOG -->
     <section class="catalog-section" id="catalog">
       <div class="section-head">
-        <h2>Каталог предметов</h2>
-        <p>Выбери предмет для просмотра доступных программ</p>
+        <div>
+          <h2>Каталог предметов</h2>
+          <p>Выбери класс и предмет для просмотра доступных программ</p>
+        </div>
+        <!-- ПЕРЕКЛЮЧАТЕЛЬ ЕГЭ / ОГЭ -->
+        <div class="exam-toggle">
+          <button class="toggle-btn active" data-exam="ЕГЭ">ЕГЭ 11 класс</button>
+          <button class="toggle-btn" data-exam="ОГЭ">ОГЭ 9 класс</button>
+        </div>
       </div>
+
       <div class="filter-row" id="filterList"></div>
       <div class="course-list" id="courseList"></div>
       <div class="empty-note" id="emptyNote" style="display:none;">По этому предмету курсов пока нет</div>
@@ -476,110 +521,63 @@
   </footer>
 
   <script>
-    // Ссылка на твоего бота
     const telegramLink = "https://t.me/StoballniRepetitorSlivv_bot";
-
-    const subjects = [
-      "Русский язык", "Математика (профиль)", "Математика (база)", "Обществознание",
-      "История", "Физика", "Химия", "Биология", "Информатика",
-      "Английский язык", "Литература", "География"
-    ];
-
-    // Актуализированные курсы с фото и ценами
-    const courses = [
-      {
-        subject: "Русский язык",
-        title: "Годовой курс «Новый русский»",
-        school: "100балльный",
-        start: "Сентябрь", lessons: "12 уроков/мес", duration: "9 мес.",
-        price: "300 ₽", image: "изображение_2.jpg", color: "#e11d48", initials: "РУС"
-      },
-      {
-        subject: "Математика (профиль)",
-        title: "Годовой курс «Легион»",
-        school: "100балльный (Ильич)",
-        start: "Сентябрь", lessons: "12 уроков/мес", duration: "9 мес.",
-        price: "300 ₽", image: "изображение_3.jpg", color: "#2563eb", initials: "ПРО"
-      },
-      {
-        subject: "Математика (база)",
-        title: "Основной курс",
-        school: "Надежда Ковалевская",
-        start: "Сентябрь", lessons: "13 уроков/мес", duration: "8.5 мес.",
-        price: "100 ₽", image: "изображение_5.jpg", color: "#0284c7", initials: "БАЗ"
-      },
-      {
-        subject: "Обществознание",
-        title: "Годовой курс «Ликбез»",
-        school: "100балльный (Валентиныч)",
-        start: "Сентябрь", lessons: "12 уроков/мес", duration: "9 мес.",
-        price: "300 ₽", image: "изображение_4.jpg", color: "#d97706", initials: "ОБЩ"
-      },
-      {
-        subject: "История",
-        title: "Годовой курс «Гвардия»",
-        school: "100балльный",
-        start: "Сентябрь", lessons: "12 уроков/мес", duration: "9 мес.",
-        price: "300 ₽", image: "изображение_6.jpg", color: "#7c3aed", initials: "ИСТ"
-      },
-      {
-        subject: "Физика",
-        title: "Годовой курс «Эбонит»",
-        school: "100балльный",
-        start: "Сентябрь", lessons: "12 уроков/мес", duration: "9 мес.",
-        price: "300 ₽", image: "изображение.jpg", color: "#0d9488", initials: "ФИЗ"
-      },
-      {
-        subject: "Химия",
-        title: "Годовой курс «Химфак»",
-        school: "100балльный",
-        start: "Сентябрь", lessons: "12 уроков/мес", duration: "9 мес.",
-        price: "300 ₽", image: "изображение_7.jpg", color: "#16a34a", initials: "ХИМ"
-      },
-      {
-        subject: "Биология",
-        title: "Годовой курс «Большая Медведица»",
-        school: "100балльный",
-        start: "Сентябрь", lessons: "12 уроков/мес", duration: "9 мес.",
-        price: "300 ₽", image: "изображение_8.jpg", color: "#65a30d", initials: "БИО"
-      },
-      {
-        subject: "Информатика",
-        title: "Годовой курс «Флеш»",
-        school: "100балльный",
-        start: "Сентябрь", lessons: "12 уроков/мес", duration: "9 мес.",
-        price: "300 ₽", image: "изображение_9.jpg", color: "#4f46e5", initials: "ИНФ"
-      },
-      {
-        subject: "Английский язык",
-        title: "Мастер-группа",
-        school: "Алина (Английский)",
-        start: "Сентябрь", lessons: "12 уроков/мес", duration: "9 мес.",
-        price: "300 ₽", image: "изображение_10.jpg", color: "#db2777", initials: "АНГ"
-      },
-      {
-        subject: "Литература",
-        title: "Годовой курс «Литфак»",
-        school: "Маша Коршунова",
-        start: "Сентябрь", lessons: "12 уроков/мес", duration: "9 мес.",
-        price: "300 ₽", image: "изображение_11.jpg", color: "#b45309", initials: "ЛИТ"
-      },
-      {
-        subject: "География",
-        title: "Годовой курс",
-        school: "100балльный (Полина)",
-        start: "Сентябрь", lessons: "12 уроков/мес", duration: "9 мес.",
-        price: "300 ₽", image: "изображение_12.jpg", color: "#0891b2", initials: "ГЕО"
-      }
-    ];
-
     document.querySelectorAll(".tg-link").forEach(a => a.href = telegramLink);
 
+    // База курсов для ЕГЭ и ОГЭ
+    const courses = [
+      // ----------------- ЕГЭ 11 класс -----------------
+      { exam: "ЕГЭ", subject: "Русский язык", title: "Годовой курс «Новый русский»", school: "100балльный", start: "Сентябрь", lessons: "12 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "изображение_2.jpg", color: "#e11d48", initials: "РУС" },
+      { exam: "ЕГЭ", subject: "Математика (профиль)", title: "Годовой курс «Легион»", school: "100балльный (Ильич)", start: "Сентябрь", lessons: "12 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "изображение_3.jpg", color: "#2563eb", initials: "ПРО" },
+      { exam: "ЕГЭ", subject: "Математика (база)", title: "Основной курс", school: "Надежда Ковалевская", start: "Сентябрь", lessons: "13 уроков/мес", duration: "8.5 мес.", price: "100 ₽", image: "изображение_5.jpg", color: "#0284c7", initials: "БАЗ" },
+      { exam: "ЕГЭ", subject: "Обществознание", title: "Годовой курс «Ликбез»", school: "100балльный (Валентиныч)", start: "Сентябрь", lessons: "12 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "изображение_4.jpg", color: "#d97706", initials: "ОБЩ" },
+      { exam: "ЕГЭ", subject: "История", title: "Годовой курс «Гвардия»", school: "100балльный", start: "Сентябрь", lessons: "12 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "изображение_6.jpg", color: "#7c3aed", initials: "ИСТ" },
+      { exam: "ЕГЭ", subject: "Физика", title: "Годовой курс «Эбонит»", school: "100балльный", start: "Сентябрь", lessons: "12 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "изображение.jpg", color: "#0d9488", initials: "ФИЗ" },
+      { exam: "ЕГЭ", subject: "Химия", title: "Годовой курс «Химфак»", school: "100балльный", start: "Сентябрь", lessons: "12 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "изображение_7.jpg", color: "#16a34a", initials: "ХИМ" },
+      { exam: "ЕГЭ", subject: "Биология", title: "Годовой курс «Большая Медведица»", school: "100балльный", start: "Сентябрь", lessons: "12 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "изображение_8.jpg", color: "#65a30d", initials: "БИО" },
+      { exam: "ЕГЭ", subject: "Информатика", title: "Годовой курс «Флеш»", school: "100балльный", start: "Сентябрь", lessons: "12 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "изображение_9.jpg", color: "#4f46e5", initials: "ИНФ" },
+      { exam: "ЕГЭ", subject: "Английский язык", title: "Мастер-группа", school: "Алина (Английский)", start: "Сентябрь", lessons: "12 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "изображение_10.jpg", color: "#db2777", initials: "АНГ" },
+      { exam: "ЕГЭ", subject: "Литература", title: "Годовой курс «Литфак»", school: "Маша Коршунова", start: "Сентябрь", lessons: "12 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "изображение_11.jpg", color: "#b45309", initials: "ЛИТ" },
+      { exam: "ЕГЭ", subject: "География", title: "Годовой курс", school: "100балльный (Полина)", start: "Сентябрь", lessons: "12 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "изображение_12.jpg", color: "#0891b2", initials: "ГЕО" },
+
+      // ----------------- ОГЭ 9 класс -----------------
+      { exam: "ОГЭ", subject: "Русский язык", title: "Годовой курс ОГЭ", school: "Умскул", start: "Сентябрь", lessons: "8 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "", color: "#e11d48", initials: "РУС" },
+      { exam: "ОГЭ", subject: "Математика", title: "Годовой курс ОГЭ", school: "Умскул", start: "Сентябрь", lessons: "8 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "", color: "#2563eb", initials: "МАТ" },
+      { exam: "ОГЭ", subject: "Обществознание", title: "Годовой курс ОГЭ", school: "Умскул", start: "Сентябрь", lessons: "8 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "", color: "#d97706", initials: "ОБЩ" },
+      { exam: "ОГЭ", subject: "История", title: "Годовой курс ОГЭ", school: "Умскул", start: "Сентябрь", lessons: "8 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "", color: "#7c3aed", initials: "ИСТ" },
+      { exam: "ОГЭ", subject: "Физика", title: "Годовой курс ОГЭ", school: "Умскул", start: "Сентябрь", lessons: "8 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "", color: "#0d9488", initials: "ФИЗ" },
+      { exam: "ОГЭ", subject: "Химия", title: "Годовой курс ОГЭ", school: "Умскул", start: "Сентябрь", lessons: "8 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "", color: "#16a34a", initials: "ХИМ" },
+      { exam: "ОГЭ", subject: "Биология", title: "Годовой курс ОГЭ", school: "Умскул", start: "Сентябрь", lessons: "8 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "", color: "#65a30d", initials: "БИО" },
+      { exam: "ОГЭ", subject: "Информатика", title: "Годовой курс ОГЭ", school: "Умскул", start: "Сентябрь", lessons: "8 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "", color: "#4f46e5", initials: "ИНФ" },
+      { exam: "ОГЭ", subject: "Английский язык", title: "Годовой курс ОГЭ", school: "Умскул", start: "Сентябрь", lessons: "8 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "", color: "#db2777", initials: "АНГ" },
+      { exam: "ОГЭ", subject: "География", title: "Годовой курс ОГЭ", school: "Умскул", start: "Сентябрь", lessons: "8 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "", color: "#0891b2", initials: "ГЕО" }
+    ];
+
+    let activeExam = "ЕГЭ";
     let activeSubject = "все предметы";
 
+    // Обработка переключателя ЕГЭ / ОГЭ
+    document.querySelectorAll('.toggle-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+        activeExam = e.target.dataset.exam;
+        renderFilters();
+        renderCourses();
+      });
+    });
+
     function renderFilters() {
+      // Собираем уникальные предметы только для выбранного экзамена
+      const availableSubjects = [...new Set(courses.filter(c => c.exam === activeExam).map(c => c.subject))];
+      const all = ["все предметы", ...availableSubjects];
+
+      // Если текущий предмет не найден в новом списке (например, перешли с "Математика (профиль)" на ОГЭ), сбрасываем на "все"
+      if (activeSubject !== "все предметы" && !availableSubjects.includes(activeSubject)) {
+        activeSubject = "все предметы";
+      }
+
       const el = document.getElementById("filterList");
-      const all = ["все предметы", ...subjects];
       el.innerHTML = all.map(s =>
         `<button class="filter-chip${s === activeSubject ? " active" : ""}" data-subject="${s}">${s}</button>`
       ).join("");
@@ -594,9 +592,8 @@
     }
 
     function renderCourses() {
-      const list = activeSubject === "все предметы"
-        ? courses
-        : courses.filter(c => c.subject === activeSubject);
+      // Фильтруем сначала по экзамену, затем по предмету
+      const list = courses.filter(c => c.exam === activeExam && (activeSubject === "все предметы" || c.subject === activeSubject));
 
       const el = document.getElementById("courseList");
       const empty = document.getElementById("emptyNote");
@@ -608,7 +605,9 @@
       }
       empty.style.display = "none";
 
-      el.innerHTML = list.map(c => `
+      el.innerHTML = list.map(c => {
+        const examClass = c.exam === "ОГЭ" ? "tag exam exam-oge" : "tag exam";
+        return `
         <div class="course-card">
           <div class="course-cover" style="background:${c.color}">
             ${c.image ? `<img src="${c.image}" alt="${c.subject}">` : c.initials}
@@ -617,7 +616,7 @@
             <h3>${c.title}</h3>
             <div class="tag-row">
               <span class="tag year">2026-2027</span>
-              <span class="tag exam">ЕГЭ</span>
+              <span class="${examClass}">${c.exam}</span>
               <span class="tag" style="background:${c.color}15;color:${c.color}">${c.subject}</span>
               <span class="tag" style="background:#f1f5f9;color:#64748b">${c.school}</span>
             </div>
@@ -632,7 +631,7 @@
             <a class="btn-details tg-link" href="${telegramLink}" target="_blank">В бота</a>
           </div>
         </div>
-      `).join("");
+      `}).join("");
     }
 
     // FAQ аккордеон
