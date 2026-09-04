@@ -157,7 +157,7 @@
       transform: translateY(-2px);
     }
 
-    /* ФОТО КАНАЛА (АМ НЯМ) */
+    /* ФОТО КАНАЛА */
     .hero-image {
       flex: 1;
       display: flex;
@@ -420,7 +420,6 @@
       </div>
       
       <div class="hero-image">
-        <!-- ФОТО АМ НЯМА -->
         <img src="photo_2026-01-22_22-05-42.jpg" alt="Канал Соточка" class="channel-avatar">
       </div>
     </section>
@@ -452,7 +451,6 @@
           <h2>Каталог предметов</h2>
           <p>Выбери класс и предмет для просмотра доступных программ</p>
         </div>
-        <!-- ПЕРЕКЛЮЧАТЕЛЬ ЕГЭ / ОГЭ -->
         <div class="exam-toggle">
           <button class="toggle-btn active" data-exam="ЕГЭ">ЕГЭ 11 класс</button>
           <button class="toggle-btn" data-exam="ОГЭ">ОГЭ 9 класс</button>
@@ -463,7 +461,6 @@
       <div class="course-list" id="courseList"></div>
       <div class="empty-note" id="emptyNote" style="display:none;">По этому предмету курсов пока нет</div>
       
-      <!-- Примечание о других школах -->
       <div class="other-schools-note">
         💡 Помимо представленных вариантов, в нашем боте доступны курсы от <strong>Умскул, ЕГЭLand, ЕГЭ Flex, Пифагора, SMITUP, NeoFamily</strong> и других онлайн-школ.
       </div>
@@ -524,7 +521,12 @@
     const telegramLink = "https://t.me/StoballniRepetitorSlivv_bot";
     document.querySelectorAll(".tg-link").forEach(a => a.href = telegramLink);
 
-    // База курсов для ЕГЭ и ОГЭ
+    const subjects = [
+      "Русский язык", "Математика (профиль)", "Математика (база)", "Обществознание",
+      "История", "Физика", "Химия", "Биология", "Информатика",
+      "Английский язык", "Литература", "География"
+    ];
+
     const courses = [
       // ----------------- ЕГЭ 11 класс -----------------
       { exam: "ЕГЭ", subject: "Русский язык", title: "Годовой курс «Новый русский»", school: "100балльный", start: "Сентябрь", lessons: "12 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "изображение_2.jpg", color: "#e11d48", initials: "РУС" },
@@ -541,22 +543,21 @@
       { exam: "ЕГЭ", subject: "География", title: "Годовой курс", school: "100балльный (Полина)", start: "Сентябрь", lessons: "12 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "изображение_12.jpg", color: "#0891b2", initials: "ГЕО" },
 
       // ----------------- ОГЭ 9 класс -----------------
-      { exam: "ОГЭ", subject: "Русский язык", title: "Годовой курс ОГЭ", school: "Умскул", start: "Сентябрь", lessons: "8 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "", color: "#e11d48", initials: "РУС" },
-      { exam: "ОГЭ", subject: "Математика", title: "Годовой курс ОГЭ", school: "Умскул", start: "Сентябрь", lessons: "8 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "", color: "#2563eb", initials: "МАТ" },
-      { exam: "ОГЭ", subject: "Обществознание", title: "Годовой курс ОГЭ", school: "Умскул", start: "Сентябрь", lessons: "8 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "", color: "#d97706", initials: "ОБЩ" },
-      { exam: "ОГЭ", subject: "История", title: "Годовой курс ОГЭ", school: "Умскул", start: "Сентябрь", lessons: "8 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "", color: "#7c3aed", initials: "ИСТ" },
-      { exam: "ОГЭ", subject: "Физика", title: "Годовой курс ОГЭ", school: "Умскул", start: "Сентябрь", lessons: "8 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "", color: "#0d9488", initials: "ФИЗ" },
-      { exam: "ОГЭ", subject: "Химия", title: "Годовой курс ОГЭ", school: "Умскул", start: "Сентябрь", lessons: "8 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "", color: "#16a34a", initials: "ХИМ" },
-      { exam: "ОГЭ", subject: "Биология", title: "Годовой курс ОГЭ", school: "Умскул", start: "Сентябрь", lessons: "8 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "", color: "#65a30d", initials: "БИО" },
-      { exam: "ОГЭ", subject: "Информатика", title: "Годовой курс ОГЭ", school: "Умскул", start: "Сентябрь", lessons: "8 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "", color: "#4f46e5", initials: "ИНФ" },
-      { exam: "ОГЭ", subject: "Английский язык", title: "Годовой курс ОГЭ", school: "Умскул", start: "Сентябрь", lessons: "8 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "", color: "#db2777", initials: "АНГ" },
-      { exam: "ОГЭ", subject: "География", title: "Годовой курс ОГЭ", school: "Умскул", start: "Сентябрь", lessons: "8 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "", color: "#0891b2", initials: "ГЕО" }
+      { exam: "ОГЭ", subject: "Русский язык", title: "Годовой курс ОГЭ", school: "100балльный", start: "Сентябрь", lessons: "8 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "изображение_11.jpg", color: "#e11d48", initials: "РУС" },
+      { exam: "ОГЭ", subject: "Математика", title: "Годовой курс ОГЭ", school: "100балльный", start: "Сентябрь", lessons: "8 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "изображение_12.jpg", color: "#2563eb", initials: "МАТ" },
+      { exam: "ОГЭ", subject: "Обществознание", title: "Годовой курс ОГЭ", school: "100балльный", start: "Сентябрь", lessons: "8 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "изображение_13.jpg", color: "#d97706", initials: "ОБЩ" },
+      { exam: "ОГЭ", subject: "История", title: "Годовой курс ОГЭ", school: "100балльный", start: "Сентябрь", lessons: "8 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "изображение_14.jpg", color: "#7c3aed", initials: "ИСТ" },
+      { exam: "ОГЭ", subject: "Физика", title: "Годовой курс ОГЭ", school: "100балльный", start: "Сентябрь", lessons: "8 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "изображение_15.jpg", color: "#0d9488", initials: "ФИЗ" },
+      { exam: "ОГЭ", subject: "Химия", title: "Годовой курс ОГЭ", school: "100балльный", start: "Сентябрь", lessons: "8 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "изображение_16.jpg", color: "#16a34a", initials: "ХИМ" },
+      { exam: "ОГЭ", subject: "Биология", title: "Годовой курс ОГЭ", school: "100балльный", start: "Сентябрь", lessons: "8 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "изображение_17.jpg", color: "#65a30d", initials: "БИО" },
+      { exam: "ОГЭ", subject: "Информатика", title: "Годовой курс ОГЭ", school: "100балльный", start: "Сентябрь", lessons: "8 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "изображение_18.jpg", color: "#4f46e5", initials: "ИНФ" },
+      { exam: "ОГЭ", subject: "Английский язык", title: "Годовой курс ОГЭ", school: "100балльный", start: "Сентябрь", lessons: "8 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "изображение_19.jpg", color: "#db2777", initials: "АНГ" },
+      { exam: "ОГЭ", subject: "География", title: "Годовой курс ОГЭ", school: "100балльный", start: "Сентябрь", lessons: "8 уроков/мес", duration: "9 мес.", price: "300 ₽", image: "изображение_20.jpg", color: "#0891b2", initials: "ГЕО" }
     ];
 
     let activeExam = "ЕГЭ";
     let activeSubject = "все предметы";
 
-    // Обработка переключателя ЕГЭ / ОГЭ
     document.querySelectorAll('.toggle-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
@@ -568,11 +569,9 @@
     });
 
     function renderFilters() {
-      // Собираем уникальные предметы только для выбранного экзамена
       const availableSubjects = [...new Set(courses.filter(c => c.exam === activeExam).map(c => c.subject))];
       const all = ["все предметы", ...availableSubjects];
 
-      // Если текущий предмет не найден в новом списке (например, перешли с "Математика (профиль)" на ОГЭ), сбрасываем на "все"
       if (activeSubject !== "все предметы" && !availableSubjects.includes(activeSubject)) {
         activeSubject = "все предметы";
       }
@@ -592,7 +591,6 @@
     }
 
     function renderCourses() {
-      // Фильтруем сначала по экзамену, затем по предмету
       const list = courses.filter(c => c.exam === activeExam && (activeSubject === "все предметы" || c.subject === activeSubject));
 
       const el = document.getElementById("courseList");
@@ -634,7 +632,6 @@
       `}).join("");
     }
 
-    // FAQ аккордеон
     document.querySelectorAll('.faq-question').forEach(q => {
       q.addEventListener('click', () => {
         q.parentElement.classList.toggle('active');
